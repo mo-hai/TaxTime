@@ -1,10 +1,12 @@
 # Local testing
 
+use python or just click twice on index.hteml
+
 ```bash
 python3 -m http.server --bind 127.0.0.1
 ```
 
-Open http://localhost:8000 in a browser.
+Open http://localhost:8000 in a browser. 
 
 
 # process
