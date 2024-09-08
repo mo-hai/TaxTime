@@ -1,6 +1,7 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
+    text-align: center;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -9,43 +10,87 @@ body {
 
 /* Header Styles */
 header {
-    background-color: #1e90ff; /* Dodger Blue */
-    padding: 20px;
-    text-align: center;
+    background-color: #333;
+    padding: 1rem 6rem;
     color: white;
+    text-align: center;
 }
 
-nav a {
+nav {
+    display: flex;
+    justify-content: space-between; /* Distribute space between left and right sections */
+    align-items: center; /* Center items vertically */
+}
+
+.nav-left a,
+.nav-right a {
     color: white;
     text-decoration: none;
-    margin: 0 10px;
+    margin: 0 0.5rem; /* Using rem for margin */
     font-size: 1.5em;
 }
 
-nav a:hover {
-    text-decoration: underline;
+.nav-left a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+/* Icon Styles */
+.nav-right i {
+    font-size: 1.5rem; /* Using rem for font size */
+    margin: 0 0.5rem; /* Using rem for margin */
+}
+
+.nav-right a {
+    display: inline-block;
+}
+
+.nav-right a:hover i {
+    color: #ffeb3b; /* Change icon color on hover */
 }
 
 /* Main Content Styles */
 main {
-    padding: 20px;
+    padding: 1rem; /* Using rem for padding */
     text-align: center;
 }
 
-h1 {
-    color: #1e90ff;
-}
-
-#about p {
+#calculator {
+    display: flex;
+    justify-content: space-between;
+    margin: 7% auto;
     width: 80%;
-    margin: 0 auto;
-    line-height: 1.6;
+    min-height: 400px;
+    min-width: 200px;
 }
 
-/* Footer Styles */
+#input-container {
+    width: 40%;
+    text-align: left;
+    padding: 10%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 150px;
+    }
+
+/* #result-container {
+    text-align: left;
+    padding: 20%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+} */
+
+#steps-container {
+    width: 40%;
+    padding: 4%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    /* Add a min-width to ensure the container doesn't collapse */
+    min-width: 150px;
+}
+
 footer {
     background-color: #333;
     color: white;
-    padding: 10px;
+    padding: 1rem; /* Using rem for padding */
     text-align: center;
 }
