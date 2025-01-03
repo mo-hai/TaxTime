@@ -1,24 +1,24 @@
-# Local testing
+# React + Vite
 
-use python or just click twice on index.html
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-```bash
-python3 -m http.server --bind 127.0.0.1
-```
+Currently, two official plugins are available:
 
-Open http://localhost:8000 in a browser. 
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-
-# process
-
-1. generate webpage , more foe inspiration than for real plan
-
-    - ask chatgpt to prepare prompt and fix a little bit for my needs
-        promppt:
-        ```text
-        A simple webpage layout designed for calculating tax based on annual revenue. The webpage has a clean and minimalistic design with the following elements: a centered header at the top that reads 'ZZP Tax Calculator,' an input field labeled 'Annual Revenue (€)' for users to enter their income, a 'Calculate Tax' button below the input field, and a section labeled 'Your Estimated Tax' to display the result. The background is wight, the text is black with a clean, sans-serif font like Arial or Helvetica, and the button is black with white text. The layout is centered with appropriate padding and spacing between elements, and a small footer at the bottom notes, 'This is a basic estimate and not financial advice.
-        ```
-    - try to design a webpage using (mobirise)[https://a.mobirise.com/]
-        I didn't really like it as it was overcomplicated and I needed something really simmple for my first js project.
-    
-    - build webpage using (replot)[https://replit.com] and copilot and chatgpt
+tax-calculator/
+├── public/
+│   ├── index.html            # Main HTML file
+│   └── favicon.ico           # Icon for the app
+├── src/
+│   ├── components/
+│   │   ├── InputSection.jsx  # Component for inputs (Annual Income, Checkbox, Button)
+│   │   ├── DeductionBlock.jsx # Component to display deductions
+│   │   └── ReductionBlock.jsx # Component to display reductions
+│   ├── App.jsx               # Main React component
+│   ├── App.css               # Styles for the app
+│   └── index.js              # Entry point for React
+├── package.json              # Project dependencies
+├── .gitignore                # Files to ignore for Git
+└── README.md                 # Project documentation
