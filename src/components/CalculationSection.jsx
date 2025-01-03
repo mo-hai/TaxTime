@@ -57,7 +57,8 @@ const ProfitCalculator = () => {
     }
 
     const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount, 0);
-    const finalProfit = taxableProfit - finalTax;
+    const finalTaxRate = taxableProfit > 0 ? (finalTax / taxableProfit * 100).toFixed(1) : 0;
+    const finalProfit = turnoverNum - finalTax;
 
     return {
       profitBeforeTax,
@@ -74,6 +75,7 @@ const ProfitCalculator = () => {
       generalTaxCredit,
       laborDiscount,
       finalTax,
+      finalTaxRate,
       finalProfit
     };
   };
@@ -220,10 +222,14 @@ const ProfitCalculator = () => {
       </div>
 
       <div className="section">
-        <div className="result-row">
-          <span className="bold">Profit after taxes</span>
-          <span className="bold">{formatCurrency(values.finalProfit)}</span>
-        </div>
+          <div className="result-row">
+            <span className="bold">Profit after taxes</span>
+            <span className="bold">{formatCurrency(values.finalProfit)}</span>
+          </div>
+          <div className="result-row">
+            <span>Final tax rate (Belastingdruk)</span>
+            <span>{values.finalTaxRate}%</span>
+          </div>
       </div>
     </div>
   );
