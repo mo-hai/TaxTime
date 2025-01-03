@@ -28,9 +28,35 @@ const ProfitCalculator = () => {
     const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= 76817 ? 0.3748 : 0.4950;
     const zvw = taxableProfit * zvw_rate;
     const incomeTax = taxableProfit * taxRate;
-    const levyReduction = Math.min(incomeTax * 0.40, 3070);
-    const taxCredit = Math.min(incomeTax * 0.60, 4907);
-    const finalTax = Math.max(incomeTax - levyReduction - taxCredit, 0);
+    
+    // Calculate general tax credit based on income thresholds
+    let generalTaxCredit = 0;
+    if (taxableProfit <= 0) {
+      generalTaxCredit = 0;
+    } else if (taxableProfit <= 28406) {
+      generalTaxCredit = 3068;
+    } else if (taxableProfit <= 76817) {
+      generalTaxCredit = Math.max(0, 3068 - (taxableProfit - 28406) * 0.0633);
+    }
+    // else generalTaxCredit remains 0
+    
+    // Calculate labor discount based on income thresholds
+    let laborDiscount = 0;
+    if (taxableProfit <= 0) {
+        laborDiscount = 0;
+    } else if (taxableProfit <= 12169) {
+        laborDiscount = taxableProfit * 0.08053;
+    } else if (taxableProfit <= 26288) {
+        laborDiscount = 980 + (taxableProfit - 12169) * 0.3003;
+    } else if (taxableProfit <= 43071) {
+        laborDiscount = 5220 + (taxableProfit - 26288) * 0.02258;
+    } else if (taxableProfit <= 129078) {
+        laborDiscount = 5599 - (taxableProfit - 43071) * 0.0651;
+    } else {
+        laborDiscount = 0;
+    }
+
+    const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount, 0);
     const finalProfit = taxableProfit - finalTax;
 
     return {
@@ -45,8 +71,8 @@ const ProfitCalculator = () => {
       zvw_rate,
       incomeTax,
       zvw,
-      levyReduction,
-      taxCredit,
+      generalTaxCredit,
+      laborDiscount,
       finalTax,
       finalProfit
     };
@@ -180,12 +206,12 @@ const ProfitCalculator = () => {
           <span className="negative-value">+{formatCurrency(values.zvw)}</span>
         </div>
         <div className="result-row">
-          <span>General levy reduction (heffingskorting)</span>
-          <span className="negative-value">-{formatCurrency(values.levyReduction)}</span>
+          <span>General tax credit (heffingskorting)</span>
+          <span className="negative-value">-{formatCurrency(values.generalTaxCredit)}</span>
         </div>
         <div className="result-row">
-          <span>General tax credit (arbeidskorting)</span>
-          <span className="negative-value">-{formatCurrency(values.taxCredit)}</span>
+          <span>Labor discount (arbeidskorting)</span>
+          <span className="negative-value">-{formatCurrency(values.laborDiscount)}</span>
         </div>
         <div className="result-row">
           <span>Final Income tax</span>
