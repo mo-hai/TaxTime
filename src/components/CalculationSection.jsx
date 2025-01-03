@@ -4,21 +4,27 @@ import './Calculator.css';
 const ProfitCalculator = () => {
   const [turnover, setTurnover] = useState('');
   const [expenses, setExpenses] = useState('');
+  const [hasSmeExemption, setHasSmeExemption] = useState(true);
+  const [hasStartersRelief, setHasStartersRelief] = useState(false);
 
   const calculateValues = () => {
     const turnoverNum = parseFloat(turnover) || 0;
     const expensesNum = parseFloat(expenses) || 0;
+
+    // 2025 rates
+    const zvw_rate = 0.0526;
+    const smeExemption_rate = 0.1270
+    const startersRelief_amount = 2123;
     
     const profitBeforeTax = turnoverNum - expensesNum;
     const businessAllowance = Math.min(profitBeforeTax * 0.14, 5030);
-    const startersRelief = Math.min(profitBeforeTax * 0.10, 2123);
+    const startersRelief = hasStartersRelief ? startersRelief_amount : 0;
     const afterDeductibles = profitBeforeTax - businessAllowance - startersRelief;
-    const smeExemption = afterDeductibles * 0.14;
+    const smeExemption = hasSmeExemption ? afterDeductibles * smeExemption_rate : 0;
     const taxableProfit = afterDeductibles - smeExemption;
     
     const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= 76817 ? 0.3748 : 0.4950;
-    const zvw = 0.0651;
-    const zvwTax = taxableProfit * zvw;
+    const zvw = taxableProfit * zvw_rate;
     const incomeTax = taxableProfit * taxRate;
     const levyReduction = Math.min(incomeTax * 0.40, 3070);
     const taxCredit = Math.min(incomeTax * 0.60, 4907);
@@ -30,12 +36,13 @@ const ProfitCalculator = () => {
       businessAllowance,
       startersRelief,
       afterDeductibles,
+      smeExemption_rate,
       smeExemption,
       taxableProfit,
       taxRate,
+      zvw_rate,
       incomeTax,
       zvw,
-      zvwTax,
       levyReduction,
       taxCredit,
       finalTax,
@@ -82,6 +89,32 @@ const ProfitCalculator = () => {
           />
           <span className="hint-text">(depreciation, insurances, accountants, purchases, etc.)</span>
         </div>
+        
+        <div className="input-row checkbox-row">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={hasStartersRelief}
+              onChange={(e) => setHasStartersRelief(e.target.checked)}
+              className="checkbox-input"
+            />
+            Right to starters relief (startersaftrek)
+          </label>
+          <span className="hint-text">(€2,123 deduction for new entrepreneurs)</span>
+        </div>
+
+        <div className="input-row checkbox-row">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={hasSmeExemption}
+              onChange={(e) => setHasSmeExemption(e.target.checked)}
+              className="checkbox-input"
+            />
+            Right to SME profit exemption (MKB-winstvrijstelling)
+          </label>
+          <span className="hint-text">(12.70% exemption on profits)</span>
+        </div>
       </div>
 
       <div className="section">
@@ -103,7 +136,7 @@ const ProfitCalculator = () => {
           <span className="bold">{formatCurrency(values.afterDeductibles)}</span>
         </div>
         <div className="result-row">
-          <span>SME profit exemption (14%)</span>
+          <span>SME profit exemption - {values.smeExemption_rate * 100}%</span>
           <span className="negative-value">-{formatCurrency(values.smeExemption)}</span>
         </div>
         <div className="result-row">
@@ -118,10 +151,6 @@ const ProfitCalculator = () => {
           <span>Tax rate</span>
           <span>{(values.taxRate * 100).toFixed(2)}%</span>
         </div>
-        <div className="result-row">
-          <span>Healthcare insurance premium (Zvw) rate</span>
-          <span>{(values.zvw * 100).toFixed(2)}%</span>
-        </div>
       </div>
 
       <div className="section">
@@ -131,8 +160,8 @@ const ProfitCalculator = () => {
           <span className="bold">{formatCurrency(values.incomeTax)}</span>
         </div>
         <div className="result-row">
-          <span>Healthcare insurance premium (Zvw)</span>
-          <span className="negative-value">+{formatCurrency(values.zvwTax)}</span>
+          <span>Healthcare insurance premium (Zvw) - {values.zvw_rate * 100}%</span>
+          <span className="negative-value">+{formatCurrency(values.zvw)}</span>
         </div>
         <div className="result-row">
           <span>General levy reduction (heffingskorting)</span>
