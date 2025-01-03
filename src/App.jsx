@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import InputSection from './components/InputSection';
-import CalculationBlock from './components/CalculationBlock';
+import Calculator from './components/CalculationSection'
 import './App.css';
 
 function App() {
@@ -34,14 +33,9 @@ function App() {
   };
 
   return (
-    <div className="tax-calculator">
+    <div cclassName="tax-calculator">
       <h1>Tax Calculator</h1>
-      <InputSection onCalculate={handleCalculate} />
-      <CalculationBlock 
-        calculations={calculations} 
-        show={showResults}
-        isFirstBusiness={isFirstBusiness}
-      />
+      <Calculator />
     </div>
   );
 }

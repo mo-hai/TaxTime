@@ -1,0 +1,55 @@
+.profit-calculator {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    /* background: white; */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-group {
+    margin-bottom: 16px;
+  }
+  
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .input-label {
+    width: 250px;
+  }
+  
+  .input-field {
+    width: 150px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .hint-text {
+    color: #666;
+    font-size: 12px;
+  }
+  
+  .section {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+  
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .negative-value {
+    color: #dc2626;
+  }
+  
+  .bold {
+    font-weight: 600;
+  }
