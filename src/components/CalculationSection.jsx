@@ -16,7 +16,10 @@ const ProfitCalculator = () => {
     const smeExemption = afterDeductibles * 0.14;
     const taxableProfit = afterDeductibles - smeExemption;
     
-    const incomeTax = taxableProfit * 0.3693;
+    const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= 76817 ? 0.3748 : 0.4950;
+    const zvw = 0.0651;
+    const zvwTax = taxableProfit * zvw;
+    const incomeTax = taxableProfit * taxRate;
     const levyReduction = Math.min(incomeTax * 0.40, 3070);
     const taxCredit = Math.min(incomeTax * 0.60, 4907);
     const finalTax = Math.max(incomeTax - levyReduction - taxCredit, 0);
@@ -29,7 +32,10 @@ const ProfitCalculator = () => {
       afterDeductibles,
       smeExemption,
       taxableProfit,
+      taxRate,
       incomeTax,
+      zvw,
+      zvwTax,
       levyReduction,
       taxCredit,
       finalTax,
@@ -107,10 +113,26 @@ const ProfitCalculator = () => {
       </div>
 
       <div className="section">
+        <h3 className="bold">Tax Rates</h3>
+        <div className="result-row">
+          <span>Tax rate</span>
+          <span>{(values.taxRate * 100).toFixed(2)}%</span>
+        </div>
+        <div className="result-row">
+          <span>Healthcare insurance premium (Zvw) rate</span>
+          <span>{(values.zvw * 100).toFixed(2)}%</span>
+        </div>
+      </div>
+
+      <div className="section">
         <h3 className="bold">Calculating tax</h3>
         <div className="result-row">
-          <span>Income tax and healthcare insurance premium (Zvw)</span>
-          <span>{formatCurrency(values.incomeTax)}</span>
+          <span>Income tax</span>
+          <span className="bold">{formatCurrency(values.incomeTax)}</span>
+        </div>
+        <div className="result-row">
+          <span>Healthcare insurance premium (Zvw)</span>
+          <span className="negative-value">+{formatCurrency(values.zvwTax)}</span>
         </div>
         <div className="result-row">
           <span>General levy reduction (heffingskorting)</span>
@@ -121,7 +143,7 @@ const ProfitCalculator = () => {
           <span className="negative-value">-{formatCurrency(values.taxCredit)}</span>
         </div>
         <div className="result-row">
-          <span>Income tax due</span>
+          <span>Final Income tax</span>
           <span className="bold">{formatCurrency(values.finalTax)}</span>
         </div>
       </div>
