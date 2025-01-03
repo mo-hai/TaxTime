@@ -5,7 +5,8 @@ const ProfitCalculator = () => {
   const [turnover, setTurnover] = useState('');
   const [expenses, setExpenses] = useState('');
   const [hasSmeExemption, setHasSmeExemption] = useState(true);
-  const [hasStartersRelief, setHasStartersRelief] = useState(false);
+  const [hasStartersRelief, setHasStartersRelief] = useState(true);
+  const [hasZelfstandigenaftrek, setHasZelfstandigenaftrek] = useState(true);
 
   const calculateValues = () => {
     const turnoverNum = parseFloat(turnover) || 0;
@@ -15,11 +16,12 @@ const ProfitCalculator = () => {
     const zvw_rate = 0.0526;
     const smeExemption_rate = 0.1270
     const startersRelief_amount = 2123;
+    const zelfstandigenaftrek_amount = 2470;
     
     const profitBeforeTax = turnoverNum - expensesNum;
-    const businessAllowance = Math.min(profitBeforeTax * 0.14, 5030);
-    const startersRelief = hasStartersRelief ? startersRelief_amount : 0;
-    const afterDeductibles = profitBeforeTax - businessAllowance - startersRelief;
+    const businessAllowance = turnoverNum <= 0 ? 0 : hasZelfstandigenaftrek ? zelfstandigenaftrek_amount : 0;
+    const startersRelief = turnoverNum <= 0 ? 0 : hasStartersRelief ? startersRelief_amount : 0;
+    const afterDeductibles = Math.max(0, profitBeforeTax - businessAllowance - startersRelief);
     const smeExemption = hasSmeExemption ? afterDeductibles * smeExemption_rate : 0;
     const taxableProfit = afterDeductibles - smeExemption;
     
@@ -89,19 +91,6 @@ const ProfitCalculator = () => {
           />
           <span className="hint-text">(depreciation, insurances, accountants, purchases, etc.)</span>
         </div>
-        
-        <div className="input-row checkbox-row">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={hasStartersRelief}
-              onChange={(e) => setHasStartersRelief(e.target.checked)}
-              className="checkbox-input"
-            />
-            Right to starters relief (startersaftrek)
-          </label>
-          <span className="hint-text">(€2,123 deduction for new entrepreneurs)</span>
-        </div>
 
         <div className="input-row checkbox-row">
           <label className="checkbox-label">
@@ -115,6 +104,33 @@ const ProfitCalculator = () => {
           </label>
           <span className="hint-text">(12.70% exemption on profits)</span>
         </div>
+
+        <div className="input-row checkbox-row">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={hasZelfstandigenaftrek}
+              onChange={(e) => setHasZelfstandigenaftrek(e.target.checked)}
+              className="checkbox-input"
+            />
+            Right to private business ownership allowance (zelfstandigenaftrek)
+          </label>
+          <span className="hint-text">(€2,470 deduction for entrepreneurs)</span>
+        </div>
+
+        <div className="input-row checkbox-row">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={hasStartersRelief}
+              onChange={(e) => setHasStartersRelief(e.target.checked)}
+              className="checkbox-input"
+            />
+            Right to starters relief (startersaftrek)
+          </label>
+          <span className="hint-text">(€2,123 deduction for new entrepreneurs)</span>
+        </div>
+
       </div>
 
       <div className="section">
