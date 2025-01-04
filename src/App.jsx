@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaGithub } from 'react-icons/fa';
 import Calculator from './components/CalculationSection';
 import './App.css';
 import { Analytics } from '@vercel/analytics/react';
@@ -41,9 +42,19 @@ function App() {
   };
 
   return (
-    <div cclassName="tax-calculator">
+    <div className="tax-calculator">
       <h1>Tax Calculator</h1>
       <Calculator />
+      <footer className="footer">
+        <a 
+          href="https://github.com/mo-hai/TaxTime" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="github-link"
+        >
+        <FaGithub />
+        </a>
+      </footer>
       <SpeedInsights />
       <Analytics />
     </div>
