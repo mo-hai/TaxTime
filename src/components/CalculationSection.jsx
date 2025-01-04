@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import './Calculator.css';
 
+// todo:
+// - fix Labor discount (arbeidskorting) - its different from the kvk calculations
+// - fix income tax (before any reductions) - its different from the kvk calculations
+// - add checkboxes for home and bike/car
+// - add links to official sources (kvk, belastingdienst, etc.) at each section
+// - add AOW pension age condition to calculations
+
 const ProfitCalculator = () => {
   const [turnover, setTurnover] = useState('');
   const [expenses, setExpenses] = useState('');
@@ -26,7 +33,7 @@ const ProfitCalculator = () => {
     const taxableProfit = afterDeductibles - smeExemption;
     
     const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= 76817 ? 0.3748 : 0.4950;
-    const zvw = taxableProfit * zvw_rate;
+    const zvw = Math.min(75864 * zvw_rate, taxableProfit * zvw_rate);
     const incomeTax = taxableProfit * taxRate;
     
     // Calculate general tax credit based on income thresholds
@@ -38,7 +45,6 @@ const ProfitCalculator = () => {
     } else if (taxableProfit <= 76817) {
       generalTaxCredit = Math.max(0, 3068 - (taxableProfit - 28406) * 0.0633);
     }
-    // else generalTaxCredit remains 0
     
     // Calculate labor discount based on income thresholds
     let laborDiscount = 0;
@@ -56,7 +62,7 @@ const ProfitCalculator = () => {
         laborDiscount = 0;
     }
 
-    const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount, 0);
+    const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount + zvw, 0);
     const finalTaxRate = taxableProfit > 0 ? (finalTax / taxableProfit * 100).toFixed(1) : 0;
     const finalProfit = turnoverNum - finalTax;
 
