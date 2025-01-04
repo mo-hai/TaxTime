@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
-import Calculator from './components/CalculationSection'
+import Calculator from './components/CalculationSection';
 import './App.css';
+const SpeedInsights = import.meta.env.PROD 
+  ? (await import('@vercel/speed-insights/react')).SpeedInsights 
+  : () => null;
+
+const Analytics = import.meta.env.PROD 
+  ? (await import('@vercel/analytics/react')).Analytics 
+  : () => null;
+
+console.log({
+  mode: import.meta.env.MODE,
+  isDev: import.meta.env.DEV,
+  isProd: import.meta.env.PROD
+});
 
 function App() {
   const [showResults, setShowResults] = useState(false);
@@ -36,6 +49,8 @@ function App() {
     <div cclassName="tax-calculator">
       <h1>Tax Calculator</h1>
       <Calculator />
+      {import.meta.env.PROD && <SpeedInsights />}
+      {import.meta.env.PROD && <Analytics />}
     </div>
   );
 }
