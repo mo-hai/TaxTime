@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import Calculator from './components/CalculationSection';
 import './App.css';
-const SpeedInsights = import.meta.env.PROD 
-  ? (await import('@vercel/speed-insights/react')).SpeedInsights 
-  : () => null;
-
-const Analytics = import.meta.env.PROD 
-  ? (await import('@vercel/analytics/react')).Analytics 
-  : () => null;
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 console.log({
   mode: import.meta.env.MODE,
@@ -49,8 +44,8 @@ function App() {
     <div cclassName="tax-calculator">
       <h1>Tax Calculator</h1>
       <Calculator />
-      {import.meta.env.PROD && <SpeedInsights />}
-      {import.meta.env.PROD && <Analytics />}
+      <SpeedInsights />
+      <Analytics />
     </div>
   );
 }
