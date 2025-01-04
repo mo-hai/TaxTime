@@ -1,19 +1,17 @@
 
 # Tax Calculator
 
-https://tax-time-nl.vercel.app
-
-This is a simple tax calculator built with React. It allows users to input their annual income and select whether its their first year of business or not. The calculator then displays the deductions and reductions based on the selected option.
-
+This is a simple tax calculator for ZPP in NL built with React. It allows users to input their annual income, deduct expenses and select applicable deductions and reductions. The calculator then displays the deductions and reductions based on the selected option and calculates the final tax.
 
 ## Project Structure
 
 ```text
 tax-calculator/
 ├── public/
-│   ├── index.html            # Main HTML file
-│   └── favicon.ico           # Icon for the app
+│   └── vite.svg              # Vite logo
 ├── src/
+│   ├── assets/
+│   │   └── react.svg         # React logo
 │   ├── components/
 │   │   ├── InputSection.jsx     # Component for inputs (Annual Income, Checkbox, Button)
 │   │   └── CalculationBlock.jsx # Component to display deductions and reductions
