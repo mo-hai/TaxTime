@@ -2,22 +2,83 @@ import React, { useState } from 'react';
 import './Calculator.css';
 
 // todo:
-// - fix Labor discount (arbeidskorting) - its different from the kvk calculations
-// - fix income tax (before any reductions) - its different from the kvk calculations
+// - add toggles for calculations of deductions and reductions so only the result is seen
+// - check Labor discount (arbeidskorting) - there some differences with kvk calculator
+// - fix SME exemption The maximum rate for deduction is 36,93%
+// - fix zvw calculation - there some differences with kvk calculator when incoome 1000 - I think it should be always aplicable no matter what are deductables
+// - add WBSO R&D tax credit - rnd_link
 // - add checkboxes for home and bike/car
-// - add links to official sources (kvk, belastingdienst, etc.) at each section
 // - add AOW pension age condition to calculations
+
 
 const OFFICIAL_LINKS = {
   zelfstandigenaftrek_link: "https://business.gov.nl/subsidy/private-business-ownership-allowance/",
   startersaftrek_link: "https://business.gov.nl/subsidy/tax-relief-new-companies/",
   smeExemption_link: "https://business.gov.nl/subsidy/sme-profit-exemption/",
+  rnd_link: "https://business.gov.nl/subsidy/wbso/",
   zvw_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/werk_en_inkomen/zorgverzekeringswet/",
   generalTaxCredit_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/algemene_heffingskorting/algemene_heffingskorting",
   laborDiscount_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/arbeidskorting"
 };
 
+const YEAR_RATES = {
+  2024: {
+    zelfstandigenaftrek_amount: 3750,
+    startersRelief_amount: 2123,
+    smeExemption_rate: 0.1331,
+    zvw_rate: 0.0532,
+    lower_income_tax_rate: 0.3697,
+    middle_income_tax_rate: 0.4950,
+    upper_income_tax_rate: 0.4950,
+    lower_income_threshold: 75518,
+    higher_income_threshold: 75518,
+    generalTaxCredit_threshold_1: 24813,
+    generalTaxCredit_threshold_2: 75518,
+    generalTaxCredit_rate: 0.063,
+    generalTaxCredit_amount: 3362,
+    laborDiscount_threshold_1: 11491,
+    laborDiscount_threshold_2: 24821,
+    laborDiscount_threshold_3: 39958,
+    laborDiscount_threshold_4: 124935,
+    laborDiscount_rate_1: 0.08425,
+    laborDiscount_rate_2: 0.31433,
+    laborDiscount_rate_3: 0.02471,
+    laborDiscount_rate_4: 0.0651,
+    laborDiscount_amount_2: 968,
+    laborDiscount_amount_3: 5158,
+    laborDiscount_amount_4: 5532,
+
+  },
+  2025: {
+    zelfstandigenaftrek_amount: 2470,
+    startersRelief_amount: 2123,
+    smeExemption_rate: 0.1270,
+    zvw_rate: 0.0526,
+    lower_income_tax_rate: 0.3582,
+    middle_income_tax_rate: 0.3748,
+    upper_income_tax_rate: 0.4950,
+    lower_income_threshold: 38441,
+    higher_income_threshold: 76817,
+    generalTaxCredit_threshold_1: 28406,
+    generalTaxCredit_threshold_2: 76817,
+    generalTaxCredit_rate: 0.06337,
+    generalTaxCredit_amount: 3068,
+    laborDiscount_threshold_1: 12169,
+    laborDiscount_threshold_2: 26288,
+    laborDiscount_threshold_3: 43071,
+    laborDiscount_threshold_4: 129078,
+    laborDiscount_rate_1: 0.08053,
+    laborDiscount_rate_2: 0.3003,
+    laborDiscount_rate_3: 0.02258,
+    laborDiscount_rate_4: 0.0651,
+    laborDiscount_amount_2: 980,
+    laborDiscount_amount_3: 5220,
+    laborDiscount_amount_4: 5599,
+  }
+};
+
 const ProfitCalculator = () => {
+  const [selectedYear, setSelectedYear] = useState(2025);
   const [turnover, setTurnover] = useState('');
   const [expenses, setExpenses] = useState('');
   const [hasZelfstandigenaftrek, setHasZelfstandigenaftrek] = useState(true);
@@ -25,14 +86,36 @@ const ProfitCalculator = () => {
   const [hasSmeExemption, setHasSmeExemption] = useState(true);
 
   const calculateValues = () => {
+    
     const turnoverNum = parseFloat(turnover) || 0;
     const expensesNum = parseFloat(expenses) || 0;
 
-    // 2025 rates
-    const zelfstandigenaftrek_amount = 2470;
-    const startersRelief_amount = 2123;
-    const smeExemption_rate = 0.1270;
-    const zvw_rate = 0.0526;
+    const {
+      zelfstandigenaftrek_amount,
+      startersRelief_amount,
+      smeExemption_rate,
+      zvw_rate,
+      lower_income_tax_rate,
+      middle_income_tax_rate,
+      upper_income_tax_rate,
+      lower_income_threshold,
+      higher_income_threshold,
+      generalTaxCredit_threshold_1,
+      generalTaxCredit_threshold_2,
+      generalTaxCredit_rate,
+      generalTaxCredit_amount,
+      laborDiscount_threshold_1,
+      laborDiscount_threshold_2,
+      laborDiscount_threshold_3,
+      laborDiscount_threshold_4,
+      laborDiscount_rate_1,
+      laborDiscount_rate_2,
+      laborDiscount_rate_3,
+      laborDiscount_rate_4,
+      laborDiscount_amount_2,
+      laborDiscount_amount_3,
+      laborDiscount_amount_4,
+    } = YEAR_RATES[selectedYear];
     
     const profitBeforeTax = turnoverNum - expensesNum;
     const businessAllowance = turnoverNum <= 0 ? 0 : hasZelfstandigenaftrek ? zelfstandigenaftrek_amount : 0;
@@ -41,7 +124,7 @@ const ProfitCalculator = () => {
     const smeExemption = hasSmeExemption ? afterDeductibles * smeExemption_rate : 0;
     const taxableProfit = afterDeductibles - smeExemption;
     
-    const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= 76817 ? 0.3748 : 0.4950;
+    const taxRate = taxableProfit <= 0 ? 0 : taxableProfit <= lower_income_threshold ? lower_income_tax_rate : taxableProfit <= higher_income_threshold ? middle_income_tax_rate : upper_income_tax_rate;
     const zvw = Math.min(75864 * zvw_rate, taxableProfit * zvw_rate);
     const incomeTax = taxableProfit * taxRate;
     
@@ -49,24 +132,24 @@ const ProfitCalculator = () => {
     let generalTaxCredit = 0;
     if (taxableProfit <= 0) {
       generalTaxCredit = 0;
-    } else if (taxableProfit <= 28406) {
-      generalTaxCredit = 3068;
-    } else if (taxableProfit <= 76817) {
-      generalTaxCredit = Math.max(0, 3068 - (taxableProfit - 28406) * 0.0633);
+    } else if (taxableProfit <= generalTaxCredit_threshold_1) {
+      generalTaxCredit = generalTaxCredit_amount;
+    } else if (taxableProfit <= generalTaxCredit_threshold_2) {
+      generalTaxCredit = Math.max(0, generalTaxCredit_amount - (taxableProfit - generalTaxCredit_threshold_1) * generalTaxCredit_rate);
     }
     
     // Calculate labor discount based on income thresholds
     let laborDiscount = 0;
     if (taxableProfit <= 0) {
         laborDiscount = 0;
-    } else if (taxableProfit <= 12169) {
-        laborDiscount = taxableProfit * 0.08053;
-    } else if (taxableProfit <= 26288) {
-        laborDiscount = 980 + (taxableProfit - 12169) * 0.3003;
-    } else if (taxableProfit <= 43071) {
-        laborDiscount = 5220 + (taxableProfit - 26288) * 0.02258;
-    } else if (taxableProfit <= 129078) {
-        laborDiscount = 5599 - (taxableProfit - 43071) * 0.0651;
+    } else if (taxableProfit <= laborDiscount_threshold_1) {
+        laborDiscount = taxableProfit * laborDiscount_rate_1;
+    } else if (taxableProfit <= laborDiscount_threshold_2) {
+        laborDiscount = laborDiscount_amount_2 + (taxableProfit - laborDiscount_threshold_1) * laborDiscount_rate_2;
+    } else if (taxableProfit <= laborDiscount_threshold_3) {
+        laborDiscount = laborDiscount_amount_3 + (taxableProfit - laborDiscount_threshold_2) * laborDiscount_rate_3;
+    } else if (taxableProfit <= laborDiscount_threshold_4) {
+        laborDiscount = laborDiscount_amount_4 - (taxableProfit - laborDiscount_threshold_3) * laborDiscount_rate_4;
     } else {
         laborDiscount = 0;
     }
@@ -108,9 +191,21 @@ const ProfitCalculator = () => {
 
   return (
     <div className="profit-calculator">
-      <h2 className="bold">ZZP Tax NL 2025</h2>
+      <h2 className="bold">ZZP Tax NL {selectedYear}</h2>
       
       <div className="input-group">
+        <div className="input-row">
+          <label className="input-label">Tax Year</label>
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            className="input-field"
+          >
+            <option value={2024}>2024</option>
+            <option value={2025}>2025</option>
+          </select>
+        </div>
+        
         <div className="input-row">
           <label className="input-label">Annual Income (VAT excluded)</label>
           <input
@@ -120,7 +215,7 @@ const ProfitCalculator = () => {
             className="input-field"
             placeholder="0"
           />
-          <span className="hint-text">(Annual box1 income from ZZP)</span>
+          <span className="hint-text">(annual box1 income from ZZP)</span>
         </div>
         
         <div className="input-row">
@@ -133,22 +228,6 @@ const ProfitCalculator = () => {
             placeholder="0"
           />
           <span className="hint-text">(depreciation, insurances, accountants, purchases, etc.)</span>
-        </div>
-
-        <div className="input-row checkbox-row">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={hasSmeExemption}
-              onChange={(e) => setHasSmeExemption(e.target.checked)}
-              className="checkbox-input"
-            />
-            Right to SME profit exemption (MKB-winstvrijstelling)
-          </label>
-          <span className="hint-text">
-            (you have to be entrepreneur for income tax purposes)
-            <a href={OFFICIAL_LINKS.smeExemption_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️</a>
-          </span>
         </div>
 
         <div className="input-row checkbox-row">
@@ -183,6 +262,22 @@ const ProfitCalculator = () => {
           </span>
         </div>
 
+        <div className="input-row checkbox-row">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={hasSmeExemption}
+              onChange={(e) => setHasSmeExemption(e.target.checked)}
+              className="checkbox-input"
+            />
+            Right to SME profit exemption (MKB-winstvrijstelling)
+          </label>
+          <span className="hint-text">
+            (you have to be entrepreneur for income tax purposes)
+            <a href={OFFICIAL_LINKS.smeExemption_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️</a>
+          </span>
+        </div>
+
       </div>
 
       <div className="section">
@@ -204,7 +299,7 @@ const ProfitCalculator = () => {
           <span className="bold">{formatCurrency(values.afterDeductibles)}</span>
         </div>
         <div className="result-row">
-          <span>SME profit exemption - {values.smeExemption_rate * 100}%</span>
+          <span>SME profit exemption - {(values.smeExemption_rate * 100).toFixed(2)}%</span>
           <span className="negative-value">-{formatCurrency(values.smeExemption)}</span>
         </div>
         <div className="result-row">
@@ -230,7 +325,7 @@ const ProfitCalculator = () => {
         <div className="result-row">
           <span>
             <a href={OFFICIAL_LINKS.zvw_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
-            Healthcare insurance premium (Zvw) - {values.zvw_rate * 100}%
+            Healthcare insurance premium (Zvw) - {(values.zvw_rate * 100).toFixed(2)}%
           </span>
           <span className="negative-value">+{formatCurrency(values.zvw)}</span>
         </div>
@@ -255,13 +350,18 @@ const ProfitCalculator = () => {
       </div>
 
       <div className="section">
-          <div className="result-row">
-            <span className="bold">Profit after taxes</span>
-            <span className="bold">{formatCurrency(values.finalProfit)}</span>
-          </div>
+          <h3 className="bold">Final results</h3>
           <div className="result-row">
             <span>Final tax rate (Belastingdruk)</span>
             <span>{values.finalTaxRate}%</span>
+          </div>
+          <div className="result-row">
+            <span>Final tax</span>
+            <span>{formatCurrency(values.finalTax)}</span>
+          </div>
+          <div className="result-row">
+            <span className="bold">Profit after taxes</span>
+            <span className="bold">{formatCurrency(values.finalProfit)}</span>
           </div>
       </div>
     </div>
