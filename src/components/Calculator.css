@@ -32,6 +32,10 @@
   .hint-text {
     color: #666;
     font-size: 12px;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    gap: 4px;
   }
   
   .section {
@@ -57,18 +61,29 @@
   .checkbox-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 1rem;
   }
   
   .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
+    gap: 8px;
   }
   
   .checkbox-input {
     width: 1.2rem;
     height: 1.2rem;
     cursor: pointer;
+  }
+  
+  .info-link {
+    text-decoration: none;
+    font-size: 14px;
+    color: #666;
+    cursor: help;
+  }
+  
+  .info-link:hover {
+    color: #333;
   }

@@ -8,22 +8,31 @@ import './Calculator.css';
 // - add links to official sources (kvk, belastingdienst, etc.) at each section
 // - add AOW pension age condition to calculations
 
+const OFFICIAL_LINKS = {
+  zelfstandigenaftrek_link: "https://business.gov.nl/subsidy/private-business-ownership-allowance/",
+  startersaftrek_link: "https://business.gov.nl/subsidy/tax-relief-new-companies/",
+  smeExemption_link: "https://business.gov.nl/subsidy/sme-profit-exemption/",
+  zvw_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/werk_en_inkomen/zorgverzekeringswet/",
+  generalTaxCredit_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/algemene_heffingskorting/algemene_heffingskorting",
+  laborDiscount_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/arbeidskorting"
+};
+
 const ProfitCalculator = () => {
   const [turnover, setTurnover] = useState('');
   const [expenses, setExpenses] = useState('');
-  const [hasSmeExemption, setHasSmeExemption] = useState(true);
-  const [hasStartersRelief, setHasStartersRelief] = useState(true);
   const [hasZelfstandigenaftrek, setHasZelfstandigenaftrek] = useState(true);
+  const [hasStartersRelief, setHasStartersRelief] = useState(true);
+  const [hasSmeExemption, setHasSmeExemption] = useState(true);
 
   const calculateValues = () => {
     const turnoverNum = parseFloat(turnover) || 0;
     const expensesNum = parseFloat(expenses) || 0;
 
     // 2025 rates
-    const zvw_rate = 0.0526;
-    const smeExemption_rate = 0.1270
-    const startersRelief_amount = 2123;
     const zelfstandigenaftrek_amount = 2470;
+    const startersRelief_amount = 2123;
+    const smeExemption_rate = 0.1270;
+    const zvw_rate = 0.0526;
     
     const profitBeforeTax = turnoverNum - expensesNum;
     const businessAllowance = turnoverNum <= 0 ? 0 : hasZelfstandigenaftrek ? zelfstandigenaftrek_amount : 0;
@@ -75,8 +84,8 @@ const ProfitCalculator = () => {
       smeExemption,
       taxableProfit,
       taxRate,
-      zvw_rate,
       incomeTax,
+      zvw_rate,
       zvw,
       generalTaxCredit,
       laborDiscount,
@@ -99,11 +108,11 @@ const ProfitCalculator = () => {
 
   return (
     <div className="profit-calculator">
-      <h2 className="bold">ZZP Tax NL</h2>
+      <h2 className="bold">ZZP Tax NL 2025</h2>
       
       <div className="input-group">
         <div className="input-row">
-          <label className="input-label">Turnover (VAT excluded)</label>
+          <label className="input-label">Annual Income (VAT excluded)</label>
           <input
             type="number"
             value={turnover}
@@ -111,7 +120,7 @@ const ProfitCalculator = () => {
             className="input-field"
             placeholder="0"
           />
-          <span className="hint-text">(Annual box1 income)</span>
+          <span className="hint-text">(Annual box1 income from ZZP)</span>
         </div>
         
         <div className="input-row">
@@ -136,7 +145,10 @@ const ProfitCalculator = () => {
             />
             Right to SME profit exemption (MKB-winstvrijstelling)
           </label>
-          <span className="hint-text">(12.70% exemption on profits)</span>
+          <span className="hint-text">
+            (you have to be entrepreneur for income tax purposes)
+            <a href={OFFICIAL_LINKS.smeExemption_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️</a>
+          </span>
         </div>
 
         <div className="input-row checkbox-row">
@@ -147,9 +159,12 @@ const ProfitCalculator = () => {
               onChange={(e) => setHasZelfstandigenaftrek(e.target.checked)}
               className="checkbox-input"
             />
-            Right to private business ownership allowance (zelfstandigenaftrek)
+            Right to Private business ownership allowance (zelfstandigenaftrek)
           </label>
-          <span className="hint-text">(€2,470 deduction for entrepreneurs)</span>
+          <span className="hint-text">
+            (you have to be entrepreneur for income tax purposes and meet 1225 hours criterion per year)
+            <a href={OFFICIAL_LINKS.zelfstandigenaftrek_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️</a>
+          </span>
         </div>
 
         <div className="input-row checkbox-row">
@@ -160,9 +175,12 @@ const ProfitCalculator = () => {
               onChange={(e) => setHasStartersRelief(e.target.checked)}
               className="checkbox-input"
             />
-            Right to starters relief (startersaftrek)
+            Right to Tax relief for new companies (startersaftrek)
           </label>
-          <span className="hint-text">(€2,123 deduction for new entrepreneurs)</span>
+          <span className="hint-text">
+            (applicable 3 times in first 5 years)
+            <a href={OFFICIAL_LINKS.startersaftrek_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️</a>
+          </span>
         </div>
 
       </div>
@@ -210,15 +228,24 @@ const ProfitCalculator = () => {
           <span className="bold">{formatCurrency(values.incomeTax)}</span>
         </div>
         <div className="result-row">
-          <span>Healthcare insurance premium (Zvw) - {values.zvw_rate * 100}%</span>
+          <span>
+            <a href={OFFICIAL_LINKS.zvw_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+            Healthcare insurance premium (Zvw) - {values.zvw_rate * 100}%
+          </span>
           <span className="negative-value">+{formatCurrency(values.zvw)}</span>
         </div>
         <div className="result-row">
-          <span>General tax credit (heffingskorting)</span>
+          <span>
+            <a href={OFFICIAL_LINKS.generalTaxCredit_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+            General tax credit (heffingskorting)
+          </span>
           <span className="negative-value">-{formatCurrency(values.generalTaxCredit)}</span>
         </div>
         <div className="result-row">
-          <span>Labor discount (arbeidskorting)</span>
+          <span>
+            <a href={OFFICIAL_LINKS.laborDiscount_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+            Labor discount (arbeidskorting)
+          </span>
           <span className="negative-value">-{formatCurrency(values.laborDiscount)}</span>
         </div>
         <div className="result-row">
