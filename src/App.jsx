@@ -46,13 +46,17 @@ function App() {
       <h1>Tax Calculator</h1>
       <Calculator />
       <footer className="footer">
+        <div className="disclaimer">
+          <p>⚠️ This calculator provides approximate tax estimates only and should not be used as definitive tax advice. 
+          Please consult with a tax professional for accurate calculations and advice specific to your situation.</p>
+        </div>
         <a 
           href="https://github.com/mo-hai/TaxTime" 
           target="_blank" 
           rel="noopener noreferrer"
           className="github-link"
         >
-        <FaGithub />
+          <FaGithub />
         </a>
       </footer>
       <SpeedInsights />
