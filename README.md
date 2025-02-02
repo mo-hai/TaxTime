@@ -3,6 +3,12 @@
 
 This is a simple tax calculator for ZPP in NL built with React. It allows users to input their annual income, deduct expenses and select applicable deductions and reductions. The calculator then displays the deductions and reductions based on the selected option and calculates the final tax.
 
+## To run the app
+
+```bash
+npm run dev
+```
+
 ## Project Structure
 
 ```text
@@ -24,6 +30,11 @@ tax-calculator/
 ├── .gitignore                # Files to ignore for Git
 └── README.md                 # Project documentation
 ```
+
+# More information on NL income tax return for entrepreneurs
+[belastingdienst](https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/zakelijk/winst/inkomstenbelasting/inkomstenbelasting_voor_ondernemers/winst_uit_onderneming)
+[nalog.nl](https://www.nalog.nl/en/)
+
 
 # React + Vite
 

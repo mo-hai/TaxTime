@@ -9,6 +9,7 @@ import './Calculator.css';
 // - add WBSO R&D tax credit - rnd_link
 // - add checkboxes for home and bike/car
 // - add AOW pension age condition to calculations
+// - There is maximum contribution in zvw : https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/werk_en_inkomen/zorgverzekeringswet/veranderingen-bijdrage-zvw/percentages-zvw
 
 
 const OFFICIAL_LINKS = {
@@ -18,7 +19,8 @@ const OFFICIAL_LINKS = {
   rnd_link: "https://business.gov.nl/subsidy/wbso/",
   zvw_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/werk_en_inkomen/zorgverzekeringswet/",
   generalTaxCredit_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/algemene_heffingskorting/algemene_heffingskorting",
-  laborDiscount_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/arbeidskorting"
+  laborDiscount_link: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/heffingskortingen/arbeidskorting/arbeidskorting",
+  tariefAdjustment_link: "https://www.belastingdienst.nl/wps/wcm/connect/nl/aftrek-en-kortingen/content/afbouw-tarief-aftrekposten-bij-hoog-inkomen"
 };
 
 const YEAR_RATES = {
@@ -140,16 +142,16 @@ const ProfitCalculator = () => {
     
     // Calculate labor discount based on income thresholds
     let laborDiscount = 0;
-    if (taxableProfit <= 0) {
+    if (profitBeforeTax <= 0) {
         laborDiscount = 0;
-    } else if (taxableProfit <= laborDiscount_threshold_1) {
-        laborDiscount = taxableProfit * laborDiscount_rate_1;
-    } else if (taxableProfit <= laborDiscount_threshold_2) {
-        laborDiscount = laborDiscount_amount_2 + (taxableProfit - laborDiscount_threshold_1) * laborDiscount_rate_2;
-    } else if (taxableProfit <= laborDiscount_threshold_3) {
-        laborDiscount = laborDiscount_amount_3 + (taxableProfit - laborDiscount_threshold_2) * laborDiscount_rate_3;
-    } else if (taxableProfit <= laborDiscount_threshold_4) {
-        laborDiscount = laborDiscount_amount_4 - (taxableProfit - laborDiscount_threshold_3) * laborDiscount_rate_4;
+    } else if (profitBeforeTax <= laborDiscount_threshold_1) {
+        laborDiscount = profitBeforeTax * laborDiscount_rate_1;
+    } else if (profitBeforeTax <= laborDiscount_threshold_2) {
+        laborDiscount = laborDiscount_amount_2 + (profitBeforeTax - laborDiscount_threshold_1) * laborDiscount_rate_2;
+    } else if (profitBeforeTax <= laborDiscount_threshold_3) {
+        laborDiscount = laborDiscount_amount_3 + (profitBeforeTax - laborDiscount_threshold_2) * laborDiscount_rate_3;
+    } else if (profitBeforeTax <= laborDiscount_threshold_4) {
+        laborDiscount = laborDiscount_amount_4 - (profitBeforeTax - laborDiscount_threshold_3) * laborDiscount_rate_4;
     } else {
         laborDiscount = 0;
     }
