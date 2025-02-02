@@ -161,7 +161,7 @@ const ProfitCalculator = () => {
         laborDiscount = 0;
     }
 
-    const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount + zvw, 0);
+    const finalTax = Math.max(incomeTax - generalTaxCredit - laborDiscount, 0) + zvw;
     const finalTaxRate = taxableProfit > 0 ? (finalTax / taxableProfit * 100).toFixed(1) : 0;
     const finalProfit = turnoverNum - finalTax;
 
@@ -380,7 +380,7 @@ const ProfitCalculator = () => {
       <div className="section">
           <h3 className="bold">Final results</h3>
           <div className="result-row">
-            <span>Final tax rate (Belastingdruk)</span>
+            <span>Final tax rate</span>
             <span>{values.finalTaxRate}%</span>
           </div>
           <div className="result-row">
