@@ -87,6 +87,11 @@ const ProfitCalculator = () => {
   const [hasStartersRelief, setHasStartersRelief] = useState(true);
   const [hasSmeExemption, setHasSmeExemption] = useState(true);
 
+  // Add new state for section toggles
+  const [showDeductibles, setShowDeductibles] = useState(false);
+  const [showTaxRates, setShowTaxRates] = useState(false);
+  const [showTaxCalculation, setShowTaxCalculation] = useState(false);
+
   const calculateValues = () => {
     
     const turnoverNum = parseFloat(turnover) || 0;
@@ -283,72 +288,93 @@ const ProfitCalculator = () => {
       </div>
 
       <div className="section">
-        <h3 className="bold">Calculating deductibles</h3>
-        <div className="result-row">
-          <span>Profit before taxes</span>
-          <span className="bold">{formatCurrency(values.profitBeforeTax)}</span>
+        <div className="section-header" onClick={() => setShowDeductibles(!showDeductibles)}>
+          <h3 className="bold">Calculating deductibles</h3>
+          <span className="toggle-icon">{showDeductibles ? '▼' : '▶'}</span>
         </div>
-        <div className="result-row">
-          <span>Private business ownership allowance (zelfstandigenaftrek)</span>
-          <span className="negative-value">-{formatCurrency(values.businessAllowance)}</span>
-        </div>
-        <div className="result-row">
-          <span>Tax relief for new companies (startersaftrek)</span>
-          <span className="negative-value">-{formatCurrency(values.startersRelief)}</span>
-        </div>
-        <div className="result-row">
-          <span>Total left after deductibles</span>
-          <span className="bold">{formatCurrency(values.afterDeductibles)}</span>
-        </div>
-        <div className="result-row">
-          <span>SME profit exemption - {(values.smeExemption_rate * 100).toFixed(2)}%</span>
-          <span className="negative-value">-{formatCurrency(values.smeExemption)}</span>
-        </div>
-        <div className="result-row">
-          <span>Taxable profit</span>
-          <span className="bold">{formatCurrency(values.taxableProfit)}</span>
-        </div>
+        {showDeductibles && (
+          <div className="section-content">
+            <div className="result-row">
+              <span>Profit before taxes</span>
+              <span className="bold">{formatCurrency(values.profitBeforeTax)}</span>
+            </div>
+            <div className="result-row">
+              <span>Private business ownership allowance (zelfstandigenaftrek)</span>
+              <span className="negative-value">-{formatCurrency(values.businessAllowance)}</span>
+            </div>
+            <div className="result-row">
+              <span>Tax relief for new companies (startersaftrek)</span>
+              <span className="negative-value">-{formatCurrency(values.startersRelief)}</span>
+            </div>
+            <div className="result-row">
+              <span>Total left after deductibles</span>
+              <span className="bold">{formatCurrency(values.afterDeductibles)}</span>
+            </div>
+            <div className="result-row">
+              <span>SME profit exemption - {(values.smeExemption_rate * 100).toFixed(2)}%</span>
+              <span className="negative-value">-{formatCurrency(values.smeExemption)}</span>
+            </div>
+            <div className="result-row">
+              <span>Taxable profit</span>
+              <span className="bold">{formatCurrency(values.taxableProfit)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="section">
-        <h3 className="bold">Tax Rates</h3>
-        <div className="result-row">
-          <span>Tax rate</span>
-          <span>{(values.taxRate * 100).toFixed(2)}%</span>
+        <div className="section-header" onClick={() => setShowTaxRates(!showTaxRates)}>
+          <h3 className="bold">Tax Rates</h3>
+          <span className="toggle-icon">{showTaxRates ? '▼' : '▶'}</span>
         </div>
+        {showTaxRates && (
+          <div className="section-content">
+            <div className="result-row">
+              <span>Tax rate</span>
+              <span>{(values.taxRate * 100).toFixed(2)}%</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="section">
-        <h3 className="bold">Calculating tax</h3>
-        <div className="result-row">
-          <span>Income tax</span>
-          <span className="bold">{formatCurrency(values.incomeTax)}</span>
+        <div className="section-header" onClick={() => setShowTaxCalculation(!showTaxCalculation)}>
+          <h3 className="bold">Calculating tax</h3>
+          <span className="toggle-icon">{showTaxCalculation ? '▼' : '▶'}</span>
         </div>
-        <div className="result-row">
-          <span>
-            <a href={OFFICIAL_LINKS.zvw_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
-            Healthcare insurance premium (Zvw) - {(values.zvw_rate * 100).toFixed(2)}%
-          </span>
-          <span className="negative-value">+{formatCurrency(values.zvw)}</span>
-        </div>
-        <div className="result-row">
-          <span>
-            <a href={OFFICIAL_LINKS.generalTaxCredit_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
-            General tax credit (heffingskorting)
-          </span>
-          <span className="negative-value">-{formatCurrency(values.generalTaxCredit)}</span>
-        </div>
-        <div className="result-row">
-          <span>
-            <a href={OFFICIAL_LINKS.laborDiscount_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
-            Labor discount (arbeidskorting)
-          </span>
-          <span className="negative-value">-{formatCurrency(values.laborDiscount)}</span>
-        </div>
-        <div className="result-row">
-          <span>Final Income tax</span>
-          <span className="bold">{formatCurrency(values.finalTax)}</span>
-        </div>
+        {showTaxCalculation && (
+          <div className="section-content">
+            <div className="result-row">
+              <span>Income tax</span>
+              <span className="bold">{formatCurrency(values.incomeTax)}</span>
+            </div>
+            <div className="result-row">
+              <span>
+                <a href={OFFICIAL_LINKS.zvw_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+                Healthcare insurance premium (Zvw) - {(values.zvw_rate * 100).toFixed(2)}%
+              </span>
+              <span className="negative-value">+{formatCurrency(values.zvw)}</span>
+            </div>
+            <div className="result-row">
+              <span>
+                <a href={OFFICIAL_LINKS.generalTaxCredit_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+                General tax credit (heffingskorting)
+              </span>
+              <span className="negative-value">-{formatCurrency(values.generalTaxCredit)}</span>
+            </div>
+            <div className="result-row">
+              <span>
+                <a href={OFFICIAL_LINKS.laborDiscount_link} target="_blank" rel="noopener noreferrer" className="info-link">ℹ️        </a>
+                Labor discount (arbeidskorting)
+              </span>
+              <span className="negative-value">-{formatCurrency(values.laborDiscount)}</span>
+            </div>
+            <div className="result-row">
+              <span>Final Income tax</span>
+              <span className="bold">{formatCurrency(values.finalTax)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="section">
