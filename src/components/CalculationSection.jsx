@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './Calculator.css';
 
 // todo:
-// - add toggles for calculations of deductions and reductions so only the result is seen
 // - check Labor discount (arbeidskorting) - there some differences with kvk calculator
 // - fix SME exemption The maximum rate for deduction is 36,93%
 // - fix zvw calculation - there some differences with kvk calculator when incoome 1000 - I think it should be always aplicable no matter what are deductables
@@ -389,7 +388,15 @@ const ProfitCalculator = () => {
           </div>
           <div className="result-row">
             <span className="bold">Profit after taxes</span>
-            <span className="bold">{formatCurrency(values.finalProfit)}</span>
+            <span className="bold"></span>
+          </div>
+          <div className="result-row">
+            <span>Annual</span>
+            <span>{formatCurrency(values.finalProfit)}</span>
+          </div>
+          <div className="result-row">
+            <span>Monthly</span>
+            <span>{formatCurrency(values.finalProfit/12)}</span>
           </div>
       </div>
     </div>
